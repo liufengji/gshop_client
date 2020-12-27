@@ -5,7 +5,8 @@
 
 import ajax from './ajax'
 
-// const BASE_URL = 'http://localhost:4000'
+//const BASE_URL = 'http://localhost:4000'
+// TODO Ctrl + Shift + u -> 大小写切换
 const BASE_URL = '/api'
 
 // TODO 1、根据经纬度获取位置详情
@@ -19,7 +20,7 @@ const BASE_URL = '/api'
 export const reqAddress = (geohash) => ajax(`${BASE_URL}/position/${geohash}`)
 
 // TODO 2、获取食品分类列表
-export const reqFoodCategorys = () => ajax(BASE_URL+'/index_category')
+export const reqFoodTypes = () => ajax(BASE_URL+'/index_category')
 
 // TODO 3、根据经纬度获取商铺列表
 //export const reqShops = (a, b) => ajax(BASE_URL+'/shops', {longitude:a, latitude:b})
