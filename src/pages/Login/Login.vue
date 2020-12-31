@@ -13,7 +13,10 @@
           <div :class="{on:loginWay}">
             <section class="login_message">
               <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
-              <button disabled="disabled" class="get_verification" :class="{right_phone:rightPhone}">获取验证码</button>
+              <button :disabled="!rightPhone" class="get_verification" :class="{right_phone:rightPhone}"
+                      @click.prevent="getCode">
+                {{computedTime > 0 ? `已发送(${computedTime})s`:'获取验证码'}}
+              </button>
             </section>
             <section class="login_verification">
               <input type="tel" maxlength="8" placeholder="验证码">
@@ -53,12 +56,64 @@
 </template>
 
 <script>
+  /*
+  todo vue单页面组件export default的写法顺序
+      1、name
+      2、components
+      3、props
+      4、data
+      5、created
+      6、methods
+      7、mounted
+      8、computed
+      9、watch
+   */
   export default {
     name: 'Login',
     data () {
       return {
         loginWay: true, // true 代表短信登陆，false 代表密码登陆\
-        phone: '' // 手机号
+        phone: '', // 手机号
+        computedTime: 0  // 倒计时的时间
+      }
+    },
+    methods: {
+      getCode () {
+
+        /*
+         TODO 0 表示 false
+         "" == false
+         true
+
+         0 == false
+         true
+
+         "0" == false
+         true
+         */
+        //如果当前没有计时器，才启动计时器
+        // 当computedTime为0的时候，表示没有计时器
+        if (!this.computedTime) {
+           // 启动倒计时
+          this.computedTime = 30
+          const interval = setInterval(() => {
+            this.computedTime--
+            if (this.computedTime <= 0) {
+              //停止计时
+              clearInterval(interval)
+            }
+          }, 1000)
+
+          /*
+          todo setTimeout(表达式,延时时间)：
+　　       在执行时,是在载入执行一次后延迟指定时间后,再执行一次表达式，需要函数触发；被动触发
+          todo setInterval(表达式,交互时间)：
+          它从载入后,立即进入计算状态，每隔指定的时间就执行一次表达式；主动触发
+           */
+
+          // 发送 ajax 请求 (向指定手机号发送验证码短信)
+          alert('-------')
+        }
       }
     },
     computed: {
