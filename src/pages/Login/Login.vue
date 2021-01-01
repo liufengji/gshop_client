@@ -10,6 +10,7 @@
       </div>
       <div class="login_content">
         <form>
+          <!-- TODO 验证码登陆 -->
           <div :class="{on:loginWay}">
             <section class="login_message">
               <input type="tel" maxlength="11" placeholder="手机号" v-model="phone">
@@ -26,16 +27,18 @@
               <a href="javascript:;">《用户服务协议》</a>
             </section>
           </div>
+          <!-- TODO 密码登陆 -->
           <div :class="{on:!loginWay}">
             <section>
               <section class="login_message">
                 <input type="tel" maxlength="11" placeholder="手机/邮箱/用户名">
               </section>
               <section class="login_verification">
-                <input type="tel" maxlength="8" placeholder="密码">
-                <div class="switch_button off">
-                  <div class="switch_circle"></div>
-                  <span class="switch_text">...</span>
+                <input type="text" maxlength="8" placeholder="密码" v-if="showPwd" v-model="pwd">
+                <input type="password" maxlength="8" placeholder="密码" v-else v-model="pwd">
+                <div class="switch_button" :class="showPwd?'on':'off'" @click="showPwd=!showPwd">
+                  <div class="switch_circle" :class="{right:showPwd}"></div>
+                  <span class="switch_text">{{showPwd ? 'abc':'...'}}</span>
                 </div>
               </section>
               <section class="login_message">
@@ -74,7 +77,9 @@
       return {
         loginWay: true, // true 代表短信登陆，false 代表密码登陆\
         phone: '', // 手机号
-        computedTime: 0  // 倒计时的时间
+        computedTime: 0,  // 倒计时的时间
+        showPwd: false,//是否显示密码
+        pwd: '' //密码
       }
     },
     methods: {
@@ -94,7 +99,7 @@
         //如果当前没有计时器，才启动计时器
         // 当computedTime为0的时候，表示没有计时器
         if (!this.computedTime) {
-           // 启动倒计时
+          // 启动倒计时
           this.computedTime = 30
           const interval = setInterval(() => {
             this.computedTime--
@@ -245,6 +250,9 @@
                   background #fff
                   box-shadow 0 2px 4px 0 rgba(0, 0, 0, .1)
                   transition transform .3s
+
+                  &.right
+                    transform translateX(30px)
 
             .login_hint
               margin-top 12px
