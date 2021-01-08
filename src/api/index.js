@@ -30,7 +30,7 @@ export const reqShops = (longitude, latitude) => ajax(BASE_URL+'/shops', {longit
 export const reqSearchShop = (geohash, keyword) => ajax(BASE_URL+'/search_shops', {geohash, keyword})
 
 // TODO 5、 获取一次性验证码
-
+export const reqCaptcha = () => ajax(BASE_URL+'/captcha')
 
 // TODO 6、用户名密码登陆
 export const reqPwdLogin = ({name, pwd, captcha}) => ajax(BASE_URL+'/login_pwd', {name, pwd, captcha}, 'POST')

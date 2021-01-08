@@ -74,6 +74,7 @@
    */
 
   import AlertTip from '../../components/AlertTip/AlertTip'
+  import {reqSendCode,reqSmsLogin,reqPwdLogin} from '../../api'
   export default {
     name: 'Login',
     data () {
@@ -92,7 +93,7 @@
     },
     methods: {
       // TODO 异步获取短信验证码
-      getCode () {
+      async getCode () {
 
         /*
          TODO 0 表示 false
@@ -110,11 +111,11 @@
         if (!this.computedTime) {
           // 启动倒计时
           this.computedTime = 30
-          const interval = setInterval(() => {
+          this.intervalId = setInterval(() => {
             this.computedTime--
             if (this.computedTime <= 0) {
               //停止计时
-              clearInterval(interval)
+              clearInterval(this.intervalId)
             }
           }, 1000)
 
@@ -126,7 +127,17 @@
            */
 
           // 发送 ajax 请求 (向指定手机号发送验证码短信)
-          alert('-------')
+          const result = await reqSendCode(this.phone)
+
+          if(result.code === 1){
+            //显示提示
+            this.showAlert(result.msg)
+            //停止倒计时
+            if(this.computedTime){
+              clearInterval(this.intervalId)
+              this.intervalId = undefined
+            }
+          }
         }
       },
       showAlert(alertText){
