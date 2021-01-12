@@ -43,7 +43,8 @@
               </section>
               <section class="login_message">
                 <input type="text" maxlength="11" placeholder="验证码" v-model="captcha">
-                <img class="get_verification" src="http://localhost:4000/captcha" alt="captcha" @click="getCaptcha">
+                <img class="get_verification" src="http://localhost:4000/captcha" alt="captcha" @click="getCaptcha"
+                     ref="captcha">
               </section>
             </section>
           </div>
@@ -74,7 +75,8 @@
    */
 
   import AlertTip from '../../components/AlertTip/AlertTip'
-  import {reqSendCode,reqSmsLogin,reqPwdLogin} from '../../api'
+  import {reqSendCode, reqSmsLogin, reqPwdLogin} from '../../api'
+
   export default {
     name: 'Login',
     data () {
@@ -84,11 +86,11 @@
         computedTime: 0,  // 倒计时的时间
         showPwd: false,//是否显示密码
         pwd: '', //密码
-        code:'',//短信验证码
-        name:'', //用户名
-        captcha:'',//图形验证码
+        code: '',//短信验证码
+        name: '', //用户名
+        captcha: '',//图形验证码
         alertText: '',  // 提示文本
-        alertShow:false  // 是否显示警告框
+        alertShow: false  // 是否显示警告框
       }
     },
     methods: {
@@ -129,58 +131,93 @@
           // 发送 ajax 请求 (向指定手机号发送验证码短信)
           const result = await reqSendCode(this.phone)
 
-          if(result.code === 1){
+          if (result.code === 1) {
             //显示提示
             this.showAlert(result.msg)
             //停止倒计时
-            if(this.computedTime){
+            if (this.computedTime) {
+              this.computedTime = 0
               clearInterval(this.intervalId)
               this.intervalId = undefined
             }
           }
         }
       },
-      showAlert(alertText){
+      showAlert (alertText) {
         this.alertShow = true
         this.alertText = alertText
       },
       // TODO 关闭警告框
-      closeTip(){
+      closeTip () {
         this.alertShow = false
         this.alertText = ''
       },
       // TODO 异步登陆
-      login(){
+      async login () {
+        let result
         // 前台表单验证
         //判断登陆方式
-        if(this.loginWay){  //短信登陆
-          const {rightPhone,phone,code} = this
-          if (!this.rightPhone){
+        if (this.loginWay) {  //短信登陆
+          const {rightPhone, phone, code} = this
+          if (!this.rightPhone) {
             //手机号不正确
             this.showAlert('手机号不正确')
-          }else if (!/^\d{6}$/.test(code)){
+            return
+          } else if (!/^\d{6}$/.test(code)) {
             //验证码必须是6位数
             this.showAlert('验证码必须是6位数')
+            return
           }
-        }else{//密码登陆
-          const {name,pwd,captcha} = this
-          if (!this.name){
+          // TODO 发送 Ajax 请求短信登陆
+          result = await reqSmsLogin(phone, code)
+
+        } else {//密码登陆
+          const {name, pwd, captcha} = this
+          if (!this.name) {
             //用户名必须指定
             this.showAlert('用户名必须指定')
-          }else if (!this.pwd){
+            return
+          } else if (!this.pwd) {
             //密码必须指定
             this.showAlert('密码必须指定')
-          }else if (!this.captcha){
+            return
+          } else if (!this.captcha) {
             //验证码必须指定
             this.showAlert('验证码必须指定')
+            return
           }
+          // TODO 发送 Ajax 请求密码登陆
+          result = await reqPwdLogin({name, pwd, captcha})
+        }
+
+        // TODO 停止倒计时
+        if (this.computedTime) {
+          this.computedTime = 0
+          clearInterval(this.intervalId)
+          this.intervalId = undefined
+        }
+
+        // TODO 根据结果数据处理
+        if (result.code === 0) {
+          const user = result.data
+          this.$store.dispatch('recordUser', user)
+          // 将user保存到vuex的state
+          //去个人中心界面
+          this.$router.replace('/profile')
+        } else {
+          // todo 显示新的图片验证码
+          this.getCaptcha()
+          this.captcha = ''
+          // todo 显示警告提示
+          const msg = result.msg
+          this.showAlert(msg)
         }
       },
       // TODO 获取一个新的图片验证码
-      getCaptcha(event){
+      getCaptcha () {
         // 每次指定的src值要不一样
         // 这不是 ajax 请求,所以不存在跨域问题
-        event.target.src = 'http://localhost:4000/captcha?time='+Date.now()
+        this.$refs.captcha.src = 'http://localhost:4000/captcha?time=' + Date.now()
       }
     },
     computed: {
@@ -188,7 +225,7 @@
         return /^1\d{10}$/.test(this.phone)
       }
     },
-    components:{
+    components: {
       AlertTip
     }
   }
