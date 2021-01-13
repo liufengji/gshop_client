@@ -7,12 +7,12 @@
           <i class="iconfont icon-zhanghucaozuo"></i>
         </div>
         <div class="user-info">
-          <p class="user-info-top">{{userInfo.name || '登录/注册' }}</p>
+          <p class="user-info-top" v-if="!userInfo.phone" >{{userInfo.name || '登录/注册' }}</p>
           <p>
             <span class="user-icon">
               <i class="iconfont icon-phone1 icon-mobile-number"></i>
             </span>
-            <span class="icon-mobile-number">暂无绑定手机号</span>
+            <span class="icon-mobile-number">{{userInfo.phone ? userInfo.phone : '暂无绑定手机号'}}</span>
           </p>
         </div>
         <span class="arrow">
