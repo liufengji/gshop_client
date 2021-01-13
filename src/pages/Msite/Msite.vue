@@ -2,12 +2,15 @@
   <section class="msite">
     <!--首页头部-->
     <HeaderTop :title="address.name">
-      <span class="header_search" slot="left">
+      <router-link class="header_search" slot="left" to="/search">
         <i class="iconfont icon-search sear-size"></i>
-      </span>
-      <span class="header_login" slot="right">
-        <span class="header_login_text">登录|注册</span>
-      </span>
+      </router-link>
+      <router-link class="header_login" slot="right" :to="userInfo._id ? '/userInfo' : '/login'">
+        <span class="header_login_text" v-if="!userInfo._id">登录|注册</span>
+        <span class="header_login_text" v-else>
+           <i class="iconfont icon-account"></i>
+        </span>
+      </router-link>
     </HeaderTop>
     <!--首页导航-->
     <nav class="msite_nav">
@@ -57,7 +60,7 @@
 
     },
     computed: {
-      ...mapState(['address', 'foodTypes']),
+      ...mapState(['address', 'foodTypes', 'userInfo']),
       /*
       根据 foodTypes 一维数组 生成 一个二维数组
       小数组中的元素个数最大是8
@@ -98,7 +101,7 @@
         // },100) // 这个时间是自己设置的
 
         //界面更新后,就立即创建 Swiper 对象
-        this.$nextTick(()=>{ //一旦完成界面更新,就立即调用（此条语句要写在数据更新之后）
+        this.$nextTick(() => { //一旦完成界面更新,就立即调用（此条语句要写在数据更新之后）
           new Swiper('.swiper-container', {
             loop: true, // 循环模式选项
             // 如果需要分页器

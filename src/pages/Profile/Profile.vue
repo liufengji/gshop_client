@@ -2,7 +2,7 @@
   <section class="profile">
     <HeaderTop title="我的"/>
     <section class="profile-number">
-      <router-link to="/login" class="profile-link">
+      <router-link :to="userInfo._id ? '/userInfo' : '/login'" class="profile-link">
         <div class="profile_image">
           <i class="iconfont icon-zhanghucaozuo"></i>
         </div>

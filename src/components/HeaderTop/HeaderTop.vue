@@ -67,4 +67,7 @@
 
       .header_login_text
         color #fff
+
+  .icon-account
+    font-size 24px
 </style>
