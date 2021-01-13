@@ -6,14 +6,16 @@ import {
   RECEIVE_ADDRESS,
   RECEIVE_FOODTYPES,
   RECEIVE_SHOPS,
-  RECEIVE_USER_INFO
+  RECEIVE_USER_INFO,
+  RESET_USER_INFO
 } from './mutation_types'
 
 import {
   reqAddress,
   reqFoodTypes,
   reqShops,
-  reqUserInfo
+  reqUserInfo,
+  reqLogout,
 } from '../api'
 
 export default {
@@ -54,11 +56,18 @@ export default {
     commit(RECEIVE_USER_INFO, {userInfo})
   },
   // todo 异步获取用户信息
-  async getUserInfo({commit}){
+  async getUserInfo ({commit}) {
     const result = await reqUserInfo()
-    if(result.code === 0){
+    if (result.code === 0) {
       const userInfo = result.data
-      commit(RECEIVE_USER_INFO,{userInfo})
+      commit(RECEIVE_USER_INFO, {userInfo})
+    }
+  },
+  // todo 异步登出
+  async logout ({commit}) {
+    const result = await reqLogout()
+    if (result.code === 0) {
+      commit(RESET_USER_INFO)
     }
   }
 }
