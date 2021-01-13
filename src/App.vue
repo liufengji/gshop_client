@@ -16,13 +16,13 @@
       //this.$store.dispatch('getAddress')
       //this.$store.dispatch('getFoodTypes')
       //this.$store.dispatch('getShops')
-
       this.getAddress()
       this.getFoodTypes()
       this.getShops()
+      this.getUserInfo()
     },
     methods: {
-      ...mapActions(['getAddress', 'getFoodTypes', 'getShops'])
+      ...mapActions(['getAddress', 'getFoodTypes', 'getShops','getUserInfo'])
     },
     components: {
       FooterGuide
