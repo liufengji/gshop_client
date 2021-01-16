@@ -5,6 +5,9 @@ import App from './App'
 import router from './router'
 import store from './store'
 
+// todo 加载 mockServer即可
+import './mock/mockServer'
+
 // todo 注册全局组件标签
 Vue.component(Button.name,Button) // <mt-button>
 
