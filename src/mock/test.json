@@ -1,0 +1,33 @@
+// todo json 数据理解
+[
+  {
+    "name": "Tom",
+    "age": 18
+  },
+  {
+    "name": "Jack",
+    "age": 19
+  },
+  {
+    "name": "Bob",
+    "age": 17
+  }
+]
+// todo Json 数据设计
+{
+  "goods":[
+    {
+      "name":"xxx",
+      "foods":[
+        {
+          "name":"yyy",
+          "price":9
+        }
+      ]
+    }
+  ],
+  "ratings":[
+
+  ],
+  "info":{}
+}
