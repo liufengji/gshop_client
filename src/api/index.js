@@ -47,6 +47,8 @@ export const reqUserInfo = () => ajax(BASE_URL+'/userinfo')
 // TODO 10、用户登出
 export const reqLogout = () => ajax(BASE_URL+'/logout')
 
+// todo 使用 mockjs 不用添加前缀
+// todo mockjs 是拦截 ajax 请求,所以 postman 和 浏览器都无法测试
 // TODO 获取商家信息
 export const reqShopInfo = () => ajax('/info')
 
