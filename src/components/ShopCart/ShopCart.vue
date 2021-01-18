@@ -27,9 +27,9 @@
               <div class="price"><span>￥10</span></div>
               <div class="cartControl-wrapper">
                 <div class="cartControl">
-                  <div class="icon FontIcon-remove_circle_outline"></div>
+                  <div class="iconfont icon-remove_circle_outline"></div>
                   <div class="cart-count">1</div>
-                  <div class="icon FontIcon-add_circle"></div>
+                  <div class="iconfont icon-add_circle"></div>
                 </div>
               </div>
             </li>
