@@ -10,7 +10,9 @@ import {
   RESET_USER_INFO,
   RECEIVE_GOODS,
   RECEIVE_RATINGS,
-  RECEIVE_INFO
+  RECEIVE_INFO,
+  INCREMENT_FOOD_COUNT,
+  DECREMENT_FOOD_COUNT
 } from './mutation_types'
 
 import {
@@ -101,6 +103,15 @@ export default {
       commit(RECEIVE_GOODS, {goods})
       // todo 数据更新了,通知一下组件
       callback && callback()
+    }
+  },
+
+  // todo 同步更新 food 中的 count 值
+  updateFoodCount({commit},{isAdd,food}){
+    if (isAdd){ //添加
+      commit(INCREMENT_FOOD_COUNT,{food})
+    }else{ //减少
+      commit(DECREMENT_FOOD_COUNT,{food})
     }
   }
 }
