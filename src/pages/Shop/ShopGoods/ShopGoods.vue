@@ -13,7 +13,7 @@
         </ul>
       </div>
       <div class="foods-wrapper">
-        <ul>
+        <ul ref="foodsUl">
           <li class="food-list-hook" v-for="(good,index) in goods" :key="index">
             <h1 class="title">{{good.name}}</h1>
             <ul>
@@ -57,18 +57,71 @@
       }
     },
     mounted () {
-      this.$store.dispatch('getShopGoods',() => { //数据更新后执行
+      this.$store.dispatch('getShopGoods', () => { //数据更新后执行
         this.$nextTick(() => {  //列表数据更新显示后执行
-          //列表显示之后创建
-          new BScroll('.menu-wrapper')
-          new BScroll('.foods-wrapper')
+          this._initScroll()
+          this._initTops()
         })
       })
     },
     computed: {
       ...mapState(['goods']),
       // todo 计算得到当前分类的小标
-      currentIndex: {}
+      currentIndex () { //初始化执行和相关数据发生变化执行
+        // todo 1、得到条件数据
+        const {scrollY,tops} = this
+
+        // todo 2、根据条件计算产生一个结果
+        const index = tops.findIndex((top,index) => {
+          // todo scrollY >= top && scrollY < 下一个top
+          return scrollY >= top && scrollY < tops[index +1]
+        })
+
+        // todo 3、返回结果
+        return index
+      }
+    },
+    methods: {
+      // 初始化滚动条
+      _initScroll () {
+        //列表显示之后创建
+        new BScroll('.menu-wrapper', {})
+        let foodsScroll = new BScroll('.foods-wrapper', {
+          probeType: 2 // todo 因为惯性滑动不会触发
+        })
+
+        // todo 给右侧列表绑定 scroll 监听
+        foodsScroll.on('scroll', ({x, y}) => {
+          //console.log(x, y)
+          this.scrollY = Math.abs(y)
+        })
+
+        // todo 给右侧列表绑定 scroll 监听
+        foodsScroll.on('scrollEnd', ({x, y}) => {
+          //console.log('scrollEnd',x, y)
+          this.scrollY = Math.abs(y)
+        })
+      },
+      // 初始化 tops
+      _initTops () {
+        // todo 1、初始化 tops
+        const tops = []
+        let top = 0
+        tops.push(top)
+
+        // todo 2、收集
+        // 找到所有的分类的li
+        //const lis = document.getElementsByClassName('food-list-hook')
+        const lis = this.$refs.foodsUl.getElementsByClassName('food-list-hook')
+        Array.prototype.slice.call(lis).forEach(li => {
+          top += li.clientHeight
+          tops.push(top)
+        })
+
+        // todo 3、更新数据
+        this.tops = tops
+        //console.log(tops)
+      }
     }
   }
 </script>
