@@ -18,7 +18,8 @@
           <li class="food-list-hook" v-for="(good,index) in goods" :key="index">
             <h1 class="title">{{good.name}}</h1>
             <ul>
-              <li class="food-item bottom-border-1px" v-for="(food,index) in good.foods" :key="index">
+              <li class="food-item bottom-border-1px" v-for="(food,index) in good.foods"
+                  :key="index" @click="showFood(food)">
                 <div class="icon">
                   <img width="57" height="57" :src="food.icon">
                 </div>
@@ -42,6 +43,7 @@
         </ul>
       </div>
     </div>
+    <Food :food="food" ref="food"/>
   </div>
 </template>
 
@@ -49,13 +51,15 @@
   import BScroll from 'better-scroll'
   import {mapState} from 'vuex'
   import CartController from '../../../components/CartController/CartController'
+  import Food from '../../../components/Food/Food'
 
   export default {
     name: 'ShopGoods',
     data () {
       return {
         scrollY: 0, // 右侧滑动的Y轴坐标(滑动过程中，实时变化)
-        tops: [] //所有右侧分类li的top组成的数组（列表第一次显示后就不再变化）
+        tops: [], //所有右侧分类li的top组成的数组（列表第一次显示后就不再变化）
+        food:{}  // 需要显示的food
       }
     },
     mounted () {
@@ -84,7 +88,7 @@
       }
     },
     methods: {
-      // 初始化滚动条
+      // todo 初始化滚动条
       _initScroll () {
         //列表显示之后创建
         new BScroll('.menu-wrapper', {
@@ -107,7 +111,7 @@
           this.scrollY = Math.abs(y)
         })
       },
-      // 初始化 tops
+      // todo 初始化 tops
       _initTops () {
         // todo 1、初始化 tops
         const tops = []
@@ -127,6 +131,7 @@
         this.tops = tops
         //console.log(tops)
       },
+      // todo 点击左侧分类，右侧滑动
       clickMenuItem (index) {
         //console.log(index)
         // 使用右侧列表滑动到对应的位置
@@ -136,10 +141,18 @@
         this.scrollY = scrollY
         // 平滑滑动右侧列表
         this.foodsScroll.scrollTo(0,-scrollY,300)
+      },
+      // todo 显示food
+      showFood(food){
+        // 设置 food
+        this.food = food
+        // 显示 food 组件（在父组件中调用子组件对象的方法）
+        this.$refs.food.toggleShow()
       }
     },
     components:{
-      CartController
+      CartController,
+      Food
     }
   }
 </script>

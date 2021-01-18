@@ -1,35 +1,55 @@
 <template>
-  <div class="food">
+  <transition name="fade">
+    <div class="food" v-if="isShow">
     <div class="food-content">
       <div class="image-header">
-        <img src="http://fuss10.elemecdn.com/8/a6/453f65f16b1391942af11511b7a90jpeg.jpeg?imageView2/1/w/750/h/750">
-        <p class="foodPanel-desc">主、辅料:水、大米、南瓜、冰糖等</p>
-        <div class="back">
-          <i class="iconfont icon-arrow_left"></i>
+        <img :src="food.image">
+        <p class="foodPanel-desc">{{food.info}}</p>
+        <div class="back" @click="toggleShow">
+          <i class="iconfont icon-arrow-left"></i>
         </div>
       </div>
       <div class="content">
-        <h1 class="title">南瓜粥</h1>
+        <h1 class="title">{{food.name}}</h1>
         <div class="detail">
-          <span class="sell-count">月售 91 份</span>
-          <span class="rating">好评率 100%</span>
+          <span class="sell-count">月售 {{food.sellCount}} 份</span>
+          <span class="rating">好评率 {{food.rating}}%</span>
         </div>
         <div class="price">
-          <span class="now">￥9</span>
-          <span class="old" style="display: none;">￥</span>
+          <span class="now">￥{{food.price}}</span>
+          <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
         </div>
         <div class="cartControl-wrapper">
-          cartControl 组件
+          <CartController :food="food"/>
         </div>
       </div>
     </div>
-    <div class="food-cover"></div>
+    <div class="food-cover" @click="toggleShow"></div>
   </div>
+  </transition>
 </template>
 
 <script>
+  import CartController from '../CartController/CartController'
+
   export default {
-    name: 'Food'
+    name: 'Food',
+    props: {
+      food: Object
+    },
+    data () {
+      return {
+        isShow: false
+      }
+    },
+    methods: {
+      toggleShow () {
+        this.isShow = !this.isShow
+      }
+    },
+    components: {
+      CartController
+    }
   }
 </script>
 
@@ -88,7 +108,7 @@
           top 10px
           left 0
 
-          .icon-arrow_left
+          .icon-arrow-left
             display block
             padding 10px
             font-size 20px
