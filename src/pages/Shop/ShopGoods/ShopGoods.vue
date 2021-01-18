@@ -4,7 +4,8 @@
       <div class="menu-wrapper">
         <ul>
           <!-- todo current 动态选中 class -->
-          <li class="menu-item" v-for="(good,index) in goods" :key="index" :class="{current:index===currentIndex}">
+          <li class="menu-item" v-for="(good,index) in goods" :key="index"
+              :class="{current:index===currentIndex}" @click="clickMenuItem(index)">
             <span class="text bottom-border-1px">
               <img class="icon" :src="good.icon" v-if="good.icon">
               {{good.name}}
@@ -69,12 +70,12 @@
       // todo 计算得到当前分类的小标
       currentIndex () { //初始化执行和相关数据发生变化执行
         // todo 1、得到条件数据
-        const {scrollY,tops} = this
+        const {scrollY, tops} = this
 
         // todo 2、根据条件计算产生一个结果
-        const index = tops.findIndex((top,index) => {
+        const index = tops.findIndex((top, index) => {
           // todo scrollY >= top && scrollY < 下一个top
-          return scrollY >= top && scrollY < tops[index +1]
+          return scrollY >= top && scrollY < tops[index + 1]
         })
 
         // todo 3、返回结果
@@ -85,19 +86,22 @@
       // 初始化滚动条
       _initScroll () {
         //列表显示之后创建
-        new BScroll('.menu-wrapper', {})
-        let foodsScroll = new BScroll('.foods-wrapper', {
-          probeType: 2 // todo 因为惯性滑动不会触发
+        new BScroll('.menu-wrapper', {
+          click: true
+        })
+        this.foodsScroll = new BScroll('.foods-wrapper', {
+          probeType: 2, // todo 因为惯性滑动不会触发
+          click: true
         })
 
         // todo 给右侧列表绑定 scroll 监听
-        foodsScroll.on('scroll', ({x, y}) => {
+        this.foodsScroll.on('scroll', ({x, y}) => {
           //console.log(x, y)
           this.scrollY = Math.abs(y)
         })
 
         // todo 给右侧列表绑定 scroll 监听
-        foodsScroll.on('scrollEnd', ({x, y}) => {
+        this.foodsScroll.on('scrollEnd', ({x, y}) => {
           //console.log('scrollEnd',x, y)
           this.scrollY = Math.abs(y)
         })
@@ -121,6 +125,16 @@
         // todo 3、更新数据
         this.tops = tops
         //console.log(tops)
+      },
+      clickMenuItem (index) {
+        //console.log(index)
+        // 使用右侧列表滑动到对应的位置
+        // 得到目标位置的scrollY
+        const scrollY = this.tops[index]
+        //立即更新scrollY(让点击的分类项成为当前分类)
+        this.scrollY = scrollY
+        // 平滑滑动右侧列表
+        this.foodsScroll.scrollTo(0,-scrollY,300)
       }
     }
   }
