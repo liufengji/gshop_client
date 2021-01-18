@@ -48,7 +48,7 @@
 <script>
   import BScroll from 'better-scroll'
   import {mapState} from 'vuex'
-  import CartController from '../../../CartController/CartController'
+  import CartController from '../../../components/CartController/CartController'
 
   export default {
     name: 'ShopGoods',
