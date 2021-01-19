@@ -18,22 +18,22 @@
       </div>
       <transition name="swipe">
         <div class="shopCart-list" v-show="listShow">
-        <div class="list-header">
-          <h1 class="title">购物车</h1>
-          <span class="empty">清空</span>
+          <div class="list-header">
+            <h1 class="title">购物车</h1>
+            <span class="empty">清空</span>
+          </div>
+          <div class="list-content">
+            <ul>
+              <li class="food" v-for="(food,index) in cartFoods" :key="index">
+                <span class="name">{{food.name}}</span>
+                <div class="price"><span>￥{{food.price}}</span></div>
+                <div class="cartControl-wrapper">
+                  <CartController :food="food"/>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="list-content">
-          <ul>
-            <li class="food" v-for="(food,index) in cartFoods" :key="index">
-              <span class="name">{{food.name}}</span>
-              <div class="price"><span>￥{{food.price}}</span></div>
-              <div class="cartControl-wrapper">
-                <CartController :food="food"/>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
       </transition>
     </div>
     <transition name="fade">
@@ -43,14 +43,15 @@
 </template>
 
 <script>
+  import BScroll from 'better-scroll'
   import {mapState, mapGetters} from 'vuex'
   import CartController from '../CartController/CartController'
 
   export default {
     name: 'ShopCart',
-    data(){
+    data () {
       return {
-        isShow:false
+        isShow: false
       }
     },
     computed: {
@@ -72,18 +73,31 @@
           return '结算'
         }
       },
-      listShow(){
+      listShow () {
         //如果总数量为0,直接不显示
-        if(this.totalCount == 0){
+        if (this.totalCount == 0) {
           this.isShow = false
+        }
+        if (this.isShow) {
+          this.$nextTick(() => { //vue更新dom是异步操作的，$nextTick()是用来知道什么时候dom更新完成
+            // 实现 BScroll 的实例是一个单例子 (单例对象)
+            if(!this.scroll){
+              this.scroll = new BScroll('.list-content', {
+                click: true
+              })
+            }else{
+              // todo 让滚动条刷新一下,重新统计内容的高度
+              this.scroll.refresh()
+            }
+          })
         }
         return this.isShow
       }
     },
-    methods:{
-      toggleShow(){
+    methods: {
+      toggleShow () {
         // 只有当总数量大于 0 时才切换
-        if(this.totalCount > 0){
+        if (this.totalCount > 0) {
           this.isShow = !this.isShow
         }
       }
