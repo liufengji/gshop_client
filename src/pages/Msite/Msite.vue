@@ -57,7 +57,7 @@
       }
     },
     mounted () {
-
+      this.imgSwiper()
     },
     computed: {
       ...mapState(['address', 'foodTypes', 'userInfo']),
@@ -87,6 +87,17 @@
         return arr
       }
     },
+    methods:{
+      imgSwiper(){
+        new Swiper('.swiper-container', {
+          loop: true, // 循环模式选项
+          // 如果需要分页器
+          pagination: {
+            el: '.swiper-pagination',
+          }
+        })
+      }
+    },
     watch: {
       foodTypes (value) { //观察foodTypes数组中有数据了,在异步更新界面之后执行
         //使用 setTimeout 可以实现效果，但不是最好的
@@ -102,13 +113,7 @@
 
         //界面更新后,就立即创建 Swiper 对象
         this.$nextTick(() => { //一旦完成界面更新,就立即调用（此条语句要写在数据更新之后）
-          new Swiper('.swiper-container', {
-            loop: true, // 循环模式选项
-            // 如果需要分页器
-            pagination: {
-              el: '.swiper-pagination',
-            }
-          })
+          this.imgSwiper()
         })
       }
     },
