@@ -16,7 +16,8 @@
           <div class="pay" :class="payClass">{{payText}}</div>
         </div>
       </div>
-      <div class="shopCart-list" v-show="listShow">
+      <transition name="swipe">
+        <div class="shopCart-list" v-show="listShow">
         <div class="list-header">
           <h1 class="title">购物车</h1>
           <span class="empty">清空</span>
@@ -33,8 +34,11 @@
           </ul>
         </div>
       </div>
+      </transition>
     </div>
-    <div class="list-mask" v-show="listShow" @click="toggleShow"></div>
+    <transition name="fade">
+      <div class="list-mask" v-show="listShow" @click="toggleShow"></div>
+    </transition>
   </div>
 </template>
 
