@@ -20,7 +20,7 @@
         <div class="shopCart-list" v-show="listShow">
           <div class="list-header">
             <h1 class="title">购物车</h1>
-            <span class="empty">清空</span>
+            <span class="empty" @click="clearCart">清空</span>
           </div>
           <div class="list-content">
             <ul>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+  import {MessageBox} from 'mint-ui'
   import BScroll from 'better-scroll'
   import {mapState, mapGetters} from 'vuex'
   import CartController from '../CartController/CartController'
@@ -81,11 +82,11 @@
         if (this.isShow) {
           this.$nextTick(() => { //vue更新dom是异步操作的，$nextTick()是用来知道什么时候dom更新完成
             // 实现 BScroll 的实例是一个单例子 (单例对象)
-            if(!this.scroll){
+            if (!this.scroll) {
               this.scroll = new BScroll('.list-content', {
                 click: true
               })
-            }else{
+            } else {
               // todo 让滚动条刷新一下,重新统计内容的高度
               this.scroll.refresh()
             }
@@ -100,6 +101,17 @@
         if (this.totalCount > 0) {
           this.isShow = !this.isShow
         }
+      },
+      clearCart () {
+        MessageBox.confirm('确定清空购物车吗？').then(
+          action => {
+            console.log('确定')
+            this.$store.dispatch('clearCart')
+          },
+          action => {
+            console.log('取消')
+          }
+        )
       }
     },
     components: {

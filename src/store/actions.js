@@ -12,7 +12,8 @@ import {
   RECEIVE_RATINGS,
   RECEIVE_INFO,
   INCREMENT_FOOD_COUNT,
-  DECREMENT_FOOD_COUNT
+  DECREMENT_FOOD_COUNT,
+  CLEAR_CART
 } from './mutation_types'
 
 import {
@@ -113,5 +114,10 @@ export default {
     }else{ //减少
       commit(DECREMENT_FOOD_COUNT,{food})
     }
+  },
+
+  // todo 同步清空购物车
+  clearCart ({commit}) {
+    commit(CLEAR_CART)
   }
 }
