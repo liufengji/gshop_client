@@ -2,7 +2,7 @@
   <div>
     <div class="shopCart">
       <div class="content">
-        <div class="content-left">
+        <div class="content-left" @click="toggleShow">
           <div class="logo-wrapper">
             <div class="logo" :class="{highlight:totalCount}">
               <i class="iconfont icon-cart-Empty-fill" :class="{highlight:totalCount}"></i>
@@ -16,36 +16,39 @@
           <div class="pay" :class="payClass">{{payText}}</div>
         </div>
       </div>
-      <div class="shopCart-list" style="display: none;">
+      <div class="shopCart-list" v-show="isShow">
         <div class="list-header">
           <h1 class="title">购物车</h1>
-          <span class="empty">清空</span></div>
+          <span class="empty">清空</span>
+        </div>
         <div class="list-content">
           <ul>
-            <li class="food">
-              <span class="name">红枣山药糙米粥</span>
-              <div class="price"><span>￥10</span></div>
+            <li class="food" v-for="(food,index) in cartFoods" :key="index">
+              <span class="name">{{food.name}}</span>
+              <div class="price"><span>￥{{food.price}}</span></div>
               <div class="cartControl-wrapper">
-                <div class="cartControl">
-                  <div class="iconfont icon-remove_circle_outline"></div>
-                  <div class="cart-count">1</div>
-                  <div class="iconfont icon-add_circle"></div>
-                </div>
+                <CartController :food="food"/>
               </div>
             </li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="list-mask" style="display:none;"></div>
+    <div class="list-mask" v-show="isShow" @click="toggleShow"></div>
   </div>
 </template>
 
 <script>
   import {mapState, mapGetters} from 'vuex'
+  import CartController from '../CartController/CartController'
 
   export default {
     name: 'ShopCart',
+    data(){
+      return {
+        isShow:false
+      }
+    },
     computed: {
       ...mapState(['cartFoods', 'info']),
       ...mapGetters(['totalCount', 'totalPrice']),
@@ -65,6 +68,14 @@
           return '结算'
         }
       }
+    },
+    methods:{
+      toggleShow(){
+        this.isShow = !this.isShow
+      }
+    },
+    components: {
+      CartController
     }
   }
 </script>
