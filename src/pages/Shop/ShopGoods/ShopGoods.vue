@@ -42,6 +42,7 @@
           </li>
         </ul>
       </div>
+      <shop-cart/>
     </div>
     <Food :food="food" ref="food"/>
   </div>
@@ -52,6 +53,7 @@
   import {mapState} from 'vuex'
   import CartController from '../../../components/CartController/CartController'
   import Food from '../../../components/Food/Food'
+  import ShopCart from '../../../components/ShopCart/ShopCart'
 
   export default {
     name: 'ShopGoods',
@@ -152,7 +154,8 @@
     },
     components:{
       CartController,
-      Food
+      Food,
+      ShopCart
     }
   }
 </script>

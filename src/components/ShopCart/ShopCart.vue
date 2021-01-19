@@ -4,16 +4,16 @@
       <div class="content">
         <div class="content-left">
           <div class="logo-wrapper">
-            <div class="logo highlight">
-              <i class="iconfont icon-shopping_cart highlight"></i>
+            <div class="logo" :class="{highlight:totalCount}">
+              <i class="iconfont icon-cart-Empty-fill" :class="{highlight:totalCount}"></i>
             </div>
-            <div class="num">1</div>
+            <div class="num" v-if="totalCount">{{totalCount}}</div>
           </div>
-          <div class="price highlight">￥10</div>
-          <div class="desc">另需配送费￥4元</div>
+          <div class="price" :class="{highlight:totalCount}">￥{{totalPrice}}</div>
+          <div class="desc">另需配送费￥{{info.deliveryPrice}}元</div>
         </div>
         <div class="content-right">
-          <div class="pay not-enough">还差￥10元起送</div>
+          <div class="pay" :class="payClass">{{payText}}</div>
         </div>
       </div>
       <div class="shopCart-list" style="display: none;">
@@ -42,8 +42,30 @@
 </template>
 
 <script>
+  import {mapState, mapGetters} from 'vuex'
+
   export default {
-    name: 'ShopCart'
+    name: 'ShopCart',
+    computed: {
+      ...mapState(['cartFoods', 'info']),
+      ...mapGetters(['totalCount', 'totalPrice']),
+      payClass () {
+        const {totalPrice} = this
+        const {minPrice} = this.info
+        return totalPrice >= minPrice ? 'enough' : 'not-enough'
+      },
+      payText () {
+        const {totalPrice} = this
+        const {minPrice} = this.info
+        if (totalPrice === 0) {
+          return `￥${minPrice}元起送`
+        } else if (totalPrice < minPrice) {
+          return `还差￥${minPrice - totalPrice}元起送`
+        } else {
+          return '结算'
+        }
+      }
+    }
   }
 </script>
 
@@ -89,7 +111,7 @@
             &.highlight
               background $green
 
-            .icon-shopping_cart
+            .icon-cart-Empty-fill
               line-height 44px
               font-size 24px
               color #80858a
@@ -109,7 +131,7 @@
             font-size 9px
             font-weight 700
             color #ffffff
-            background rgb (240, 20, 20)
+            background rgb(240, 20, 20)
             box-shadow 0 4px 8px 0 rgba(0, 0, 0, 0.4)
 
         .price
@@ -186,7 +208,7 @@
         line-height 40px
         padding 0 18px
         background #f3f5f7
-        border-bottom 1px solid rgba (7, 17, 27, 0.1)
+        border-bottom 1px solid rgba(7, 17, 27, 0.1)
 
         .title
           float left
