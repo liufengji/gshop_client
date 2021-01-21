@@ -126,7 +126,7 @@
           color rgb(7, 17, 27)
 
         .detail
-          margin-bottom 18px
+          margin-bottom 2px
           line-height 10px
           height 10px
           font-size 0
