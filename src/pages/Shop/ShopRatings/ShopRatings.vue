@@ -3,24 +3,24 @@
     <div class="ratings-content">
       <div class="overview">
         <div class="overview-left">
-          <h1 class="score">4.7</h1>
+          <h1 class="score">{{info.score}}</h1>
           <div class="title">综合评分</div>
-          <div class="rank">高于周边商家 99%</div>
+          <div class="rank">高于周边商家 {{info.rankRate}}%</div>
         </div>
         <div class="overview-right">
           <div class="score-wrapper">
             <span class="title">服务态度</span>
-            <Star :score="4.6" :size="36"/>
-            <span class="score">4.6</span>
+            <Star :score="info.serviceScore" :size="36"/>
+            <span class="score">{{info.serviceScore}}</span>
           </div>
           <div class="score-wrapper">
             <span class="title">商品评分</span>
-            <Star :score="4.7" :size="36"/>
-            <span class="score">4.7</span>
+            <Star :score="info.foodScore" :size="36"/>
+            <span class="score">{{info.foodScore}}</span>
           </div>
           <div class="delivery-wrapper">
             <span class="title">送达时间</span>
-            <span class="delivery">30 分钟</span>
+            <span class="delivery">{{info.deliveryTime}} 分钟</span>
           </div>
         </div>
       </div>
@@ -44,25 +44,22 @@
       </div>
       <div class="rating-wrapper">
         <ul>
-          <li class="rating-item">
+          <li class="rating-item" v-for="(rating,index) in ratings" :key="index">
             <div class="avatar">
-              <img width="28" height="28"
-                   src="http://static.galileo.xiaojukeji.com/static/tms/default_header.png">
+              <img width="28" height="28" :src="rating.avatar">
             </div>
             <div class="content">
-              <h1 class="name">aa</h1>
+              <h1 class="name">{{rating.username}}</h1>
               <div class="star-wrapper">
-                <Star :score="5" :size="24"/>
-                <span class="delivery">30</span>
+                <Star :score="rating.score" :size="24"/>
+                <span class="delivery">{{rating.deliveryTime}}</span>
               </div>
-              <p class="text">不错</p>
+              <p class="text">{{rating.text}}</p>
               <div class="recommend">
-                <span class="iconfont icon-good"></span>
-                <span class="item">南瓜粥</span>
-                <span class="item">皮蛋瘦肉粥</span>
-                <span class="item">扁豆焖面</span>
+                <span class="iconfont" :class="rating.rateType===0?'icon-dianzan':'icon-bad'"></span>
+                <span class="item" v-for="(item,index) in rating.recommend" :key="index">{{item}}</span>
               </div>
-              <div class="time">2016-07-23 21:52:44</div>
+              <div class="time">{{rating.rateTime}}</div>
             </div>
           </li>
           <li class="rating-item">
@@ -90,10 +87,18 @@
 </template>
 
 <script>
+  import {mapState} from 'vuex'
   import Star from '../../../components/Star/Star'
+
   export default {
     name: 'ShopRatings',
-    components:{
+    mounted () {
+      this.$store.dispatch('getShopRatings')
+    },
+    computed:{
+      ...mapState(['info','ratings'])
+    },
+    components: {
       Star
     }
   }
@@ -109,6 +114,7 @@
     width 100%
     overflow hidden
     background #fff
+
     .ratings-content
       .overview
         display flex
@@ -194,7 +200,7 @@
         .rating-type
           padding 18px 0
           margin 0 18px
-          border-1px(rgba(7, 17, 27, 0.1))
+          bottom-border-1px(rgba(7, 17, 27, 0.1))
           font-size 0
 
           .block
@@ -289,12 +295,12 @@
               line-height 16px
               font-size 0
 
-              .icon-good, .icon-bad, .item
+              .icon-dianzan, .icon-bad, .item
                 display inline-block
                 margin 0 8px 4px 0
                 font-size 9px
 
-              .icon-good
+              .icon-dianzan
                 color $yellow
 
               .icon-bad
