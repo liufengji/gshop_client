@@ -27,24 +27,24 @@
       <div class="split"></div>
       <div class="rating-select">
         <div class="rating-type border-1px">
-          <span class="block positive active">
-            全部<span class="count">30</span>
+          <span class="block positive" :class="{active:selectType===2}" @click="setSelectType(2)">
+            全部<span class="count">{{ratings.length}}</span>
           </span>
-          <span class="block positive">
-            满意<span class="count">28</span>
+          <span class="block positive" :class="{active:selectType===0}" @click="setSelectType(0)">
+            满意<span class="count">{{positiveSize}}</span>
           </span>
-          <span class="block negative">
-            不满意<span class="count">2</span>
+          <span class="block negative" :class="{active:selectType===1}" @click="setSelectType(1)">
+            不满意<span class="count">{{ratings.length-positiveSize}}</span>
           </span>
         </div>
-        <div class="switch on">
+        <div class="switch" :class="{on:onlyShowText}" @click="toggleOnlyShowText">
           <span class="iconfont icon-success-fill"></span>
           <span class="text">只看有内容的评价</span>
         </div>
       </div>
       <div class="rating-wrapper">
         <ul>
-          <li class="rating-item" v-for="(rating,index) in ratings" :key="index">
+          <li class="rating-item" v-for="(rating,index) in filterRatings" :key="index">
             <div class="avatar">
               <img width="28" height="28" :src="rating.avatar">
             </div>
@@ -62,24 +62,6 @@
               <div class="time">{{rating.rateTime}}</div>
             </div>
           </li>
-          <li class="rating-item">
-            <div class="avatar">
-              <img width="28" height="28"
-                   src="http://static.galileo.xiaojukeji.com/static/tms/default_header.png">
-            </div>
-            <div class="content">
-              <h1 class="name">aa</h1>
-              <div class="star-wrapper">
-                <Star :score="4" :size="24"/>
-                <span class="delivery">30</span>
-              </div>
-              <p class="text">不错</p>
-              <div class="recommend">
-                <span class="iconfont icon-bad"></span>
-              </div>
-              <div class="time">2016-07-23 21:52:44</div>
-            </div>
-          </li>
         </ul>
       </div>
     </div>
@@ -87,16 +69,57 @@
 </template>
 
 <script>
-  import {mapState} from 'vuex'
+  import BScroll from 'better-scroll'
+  import {mapState,mapGetters} from 'vuex'
   import Star from '../../../components/Star/Star'
 
   export default {
     name: 'ShopRatings',
-    mounted () {
-      this.$store.dispatch('getShopRatings')
+    data () {
+      return {
+        onlyShowText: true, // 是否只显示有文本内容的
+        selectType: 2 // 选择的评价类型: 0满意 1不满意 2满意
+      }
     },
-    computed:{
-      ...mapState(['info','ratings'])
+    mounted () {
+      this.$store.dispatch('getShopRatings', () => {
+        this.$nextTick(() => {
+          new BScroll(this.$refs.ratings, {
+            click: true
+          })
+        })
+      })
+    },
+    computed: {
+      ...mapState(['info', 'ratings']),
+      ...mapGetters(['positiveSize']),
+      filterRatings () {
+        //得到相关的数据
+        const {ratings,onlyShowText,selectType} = this
+        //产生一个过滤的新数组
+        return ratings.filter(rating => {
+          const {rateType,text} = rating
+          /*
+             条件1:
+                 selectType:0/1/2
+                 rateType:0/1
+                 selectType===2 || selectType===rateType
+             条件2:
+                 onlyShowText:true/false
+                 text:有值|没有值
+                 !onlyShowText || text.length > 0
+           */
+          return (selectType===2 || selectType===rateType) && (!onlyShowText || text.length > 0)
+        })
+      }
+    },
+    methods: {
+      setSelectType (selectType) {
+        this.selectType = selectType
+      },
+      toggleOnlyShowText(){
+        this.onlyShowText = !this.onlyShowText
+      }
     },
     components: {
       Star
