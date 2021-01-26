@@ -84,7 +84,7 @@
     mounted () {
       this.$store.dispatch('getShopRatings', () => {
         this.$nextTick(() => {
-          new BScroll(this.$refs.ratings, {
+          this.scroll = new BScroll(this.$refs.ratings, {
             click: true
           })
         })
@@ -116,9 +116,15 @@
     methods: {
       setSelectType (selectType) {
         this.selectType = selectType
+        this.$nextTick(()=>{
+          this.scroll.refresh()
+        })
       },
       toggleOnlyShowText(){
         this.onlyShowText = !this.onlyShowText
+        this.$nextTick(()=>{
+          this.scroll.refresh()
+        })
       }
     },
     components: {
