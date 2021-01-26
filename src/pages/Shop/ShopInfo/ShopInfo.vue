@@ -16,7 +16,7 @@
         <h3 class="section-title">活动与服务</h3>
         <div class="activity">
           <div class="activity-item" v-for="(support,index) in info.supports" :key="index"
-            :class="supportClasses[support.type]">
+               :class="supportClasses[support.type]">
             <span class="content-tag">
               <span class="mini-tag">{{support.name}}</span>
             </span>
@@ -28,7 +28,7 @@
       <section class="section">
         <h3 class="section-title">商家实景</h3>
         <div class="pic-wrapper">
-          <ul class="pic-list">
+          <ul class="pic-list" ref="picsUl">
             <li class="pic-item" v-for="(pic,index) in info.pics" :key="index">
               <img width="120" height="90" :src="pic"/>
             </li>
@@ -50,17 +50,49 @@
 </template>
 
 <script>
+  import BScroll from 'better-scroll'
   import {mapState} from 'vuex'
 
   export default {
     name: 'ShopInfo',
     data () {
       return {
-        supportClasses:['activity-green', 'activity-red', 'activity-orange']
+        supportClasses: ['activity-green', 'activity-red', 'activity-orange']
       }
     },
     computed: {
       ...mapState(['info'])
+    },
+    mounted () {
+      this.$nextTick(()=>{
+        this.ratingsScroll = new BScroll('.shop-info',{
+          click:true
+        })
+        this.info.pics && this._initScroll()
+        this.picsScroll = new BScroll('.pic-wrapper', {
+          click:true,
+          scrollX: true // todo 水平滑动
+        })
+      })
+    },
+    methods: {
+      _initScroll () {
+        //动态计算ul的宽度
+        const ul = this.$refs.picsUl
+        const liWidth = 120
+        const space = 6
+        const count = this.info.pics.length
+        ul.style.width = (liWidth + space) * count - space + 'px'
+      }
+    },
+    watch: {
+      info () {
+        this.$nextTick(() => {
+          this.ratingsScroll.refresh()
+          this._initScroll()
+          this.picsScroll.refresh()
+        })
+      }
     }
   }
 </script>
