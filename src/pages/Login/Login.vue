@@ -158,7 +158,7 @@
         // 前台表单验证
         //判断登陆方式
         if (this.loginWay) {  //短信登陆
-          const {rightPhone, phone, code} = this
+          const {phone, code} = this
           if (!this.rightPhone) {
             //手机号不正确
             this.showAlert('手机号不正确')
