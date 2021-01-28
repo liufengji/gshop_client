@@ -4,10 +4,16 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import MSite from '../pages/MSite/MSite'
-import Search from '../pages/Search/Search'
-import Order from '../pages/Order/Order'
-import Profile from '../pages/Profile/Profile'
+// import MSite from '../pages/MSite/MSite'
+// import Search from '../pages/Search/Search'
+// import Order from '../pages/Order/Order'
+// import Profile from '../pages/Profile/Profile'
+
+const MSite = () =>import('../pages/MSite/MSite');
+const Search = () =>import('../pages/Search/Search');
+const Order = () =>import('../pages/Order/Order');
+const Profile = () =>import('../pages/Profile/Profile');
+
 import Login from '../pages/Login/Login'
 import UserInfo from '../pages/UserInfo/UserInfo'
 import Shop from '../pages/Shop/Shop'
@@ -28,6 +34,8 @@ export default new VueRouter({
     {
       path: '/msite',
       name: 'MSite',
+      // todo 返回路由组件的函数,只有执行此函数才会加载路由组件，这个函数在请求对应的路由路径时才会执行
+      // todo 太小的js就不用,否则就是浪费请求资源
       component: MSite,
       meta: {
         showFooter: true
