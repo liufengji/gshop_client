@@ -1,15 +1,21 @@
 
 import Vue from 'vue'
 import {Button} from 'mint-ui'
+import VueLazyload from 'vue-lazyload'
 import App from './App'
 import router from './router'
 import store from './store'
 
 // todo 加载 mockServer即可
 import './mock/mockServer'
+import loading from './common/images/loading.gif'
 
 // todo 注册全局组件标签
 Vue.component(Button.name,Button) // <mt-button>
+
+Vue.use(VueLazyload, { //todo 内部自定义了一个指令 lazy
+  loading
+})
 
 Vue.config.productionTip = false
 
