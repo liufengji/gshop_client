@@ -8,6 +8,7 @@ import store from './store'
 
 // todo 加载 mockServer即可
 import './mock/mockServer'
+import './filters' //todo 加载过滤器
 import loading from './common/images/loading.gif'
 
 // todo 注册全局组件标签
